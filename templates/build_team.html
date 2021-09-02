@@ -1,0 +1,194 @@
+{% extends 'base.html' %} {% block title %} Build Your Pokemon Team {% endblock
+%} {% block content %}
+<nav class="navbar has-shadow is-white">
+  <div class="navbar-brand">
+    <a href="/" class="navbar-item"><img
+      src="https://fontmeme.com/permalink/210624/2c289d1aecfbda9aec6a14c7069faf01.png"
+      alt="pokemon-font" style="max-height: 70px" class="py-2 px-2"
+      border="0"
+    /> </a>
+    {% if g.user %}
+    <a class="navbar-burger" id="nav-burger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </a> 
+    {% endif %}
+  </div>
+  {% if g.user %}
+  <div class="navbar-menu" id="nav-links">
+    <div class="navbar-end pr-2">
+      <a href="/profile" class="navbar-item is-size-5">My Saved Teams</a>
+      <a href="/logout" class="navbar-item is-size-5">Logout</a>
+    </div> 
+  </div>
+  {% endif %}
+</nav>
+<h1 class="title is-1 has-text-centered pt-3">Build Your Team</h1>
+<form id="search-form" class="px-5 mx-6">
+<div class="container has-text-centered py-2">
+<input type="text" placeholder="Search pokemon by name" id="search-term" class="is-size-4"></input>
+<button class="button">
+<i class="fa fa-search is-size-4"></i>
+</button>
+</div>
+</form>
+
+<div id="loader" class="o-pokeball c-loader u-tada hidden"></div>
+<div id="search-error" class="hidden has-text-centered is-size-5"> <i class="fas fa-exclamation-circle"></i> Sorry, we don't know that Pokemon</div>
+
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content has-background-white py-5 px-5 has-text-centered">
+  <div id="pokemon-card">
+    <p id="pokemon-name"></p>
+    <span id="pokemon-type"></span>
+    <img id="pokemon-img" />
+    <div id="pokemon-stats"></div>
+    <button id="add-btn" class="hidden button mt-2 is-link is-light">Add to Team</button>
+  </div>
+</div>
+</div>
+
+<section class="section">
+<div class="box mx-6 my-3">
+<div id="team-error" class="hidden has-text-centered is-size-5"><i class="fas fa-exclamation-circle"></i> Team is full! Please delete a Pokemon to add another</div>
+
+<div id="team-list" class="has-text-centered my-4"></div>
+
+{% if g.user %}
+<div class="is-size-5">
+<p id="save-team-message" class="ml-6"></p>
+</div>
+<div id="save-team" class="hidden ml-6">
+  <form class="control">
+    <input type="text" id="team-name" placeholder="Name your team" class="is-size-5">
+    <button type="submit" class="button is-small is-link is-light">Save</button>
+  </form>
+</div>
+{% else %}
+<p class="ml-6"><a href="/login">Login</a> or <a href="/register">Register</a> to save your team</p>
+{% endif %}
+<table class="is-size-5 ml-5 has-text-centered">
+  <thead>
+    <tr>
+      <th class="px-5">Types</th>
+      <th class="px-5">Weakness</th>
+      <th class="px-5">Resist</th>
+      <th class="px-5">Immune</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class=" type fire has-text-light">Fire</td>
+      <td class="stat fire" id="weak_against">0</td>
+      <td class="stat fire" id="resists">0</td>
+      <td class="stat fire" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class=" type water has-text-light">Water</td>
+      <td class="stat water" id="weak_against">0</td>
+      <td class="stat water" id="resists">0</td>
+      <td class="stat water" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type grass has-text-light">Grass</td>
+      <td class="stat grass" id="weak_against">0</td>
+      <td class="stat grass" id="resists">0</td>
+      <td class="stat grass" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type electric has-text-light">Electric</td>
+      <td class="stat electric" id="weak_against">0</td>
+      <td class="stat electric" id="resists">0</td>
+      <td class="stat electric" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type ice has-text-light">Ice</td>
+      <td class="stat ice" id="weak_against">0</td>
+      <td class="stat ice" id="resists">0</td>
+      <td class="stat ice" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type fighting has-text-light">Fighting</td>
+      <td class="stat fighting" id="weak_against">0</td>
+      <td class="stat fighting" id="resists">0</td>
+      <td class="stat fighting" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type poison has-text-light">Poison</td>
+      <td class="stat poison" id="weak_against">0</td>
+      <td class="stat poison" id="resists">0</td>
+      <td class="stat poison" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type ground has-text-light">Ground</td>
+      <td class="stat ground" id="weak_against">0</td>
+      <td class="stat ground" id="resists">0</td>
+      <td class="stat ground" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type flying has-text-light">Flying</td>
+      <td class="stat flying" id="weak_against">0</td>
+      <td class="stat flying" id="resists">0</td>
+      <td class="stat flying" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type psychic has-text-light">Psychic</td>
+      <td class="stat psychic" id="weak_against">0</td>
+      <td class="stat psychic" id="resists">0</td>
+      <td class="stat psychic" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type bug has-text-light">Bug</td>
+      <td class="stat bug" id="weak_against">0</td>
+      <td class="stat bug" id="resists">0</td>
+      <td class="stat bug" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type rock has-text-light">Rock</td>
+      <td class="stat rock" id="weak_against">0</td>
+      <td class="stat rock" id="resists">0</td>
+      <td class="stat rock" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type ghost has-text-light">Ghost</td>
+      <td class="stat ghost" id="weak_against">0</td>
+      <td class="stat ghost" id="resists">0</td>
+      <td class="stat ghost" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type dark has-text-light">Dark</td>
+      <td class="stat dark" id="weak_against">0</td>
+      <td class="stat dark" id="resists">0</td>
+      <td class="stat dark" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type normal has-text-light">Normal</td>
+      <td class="stat normal" id="weak_against">0</td>
+      <td class="stat normal" id="resists">0</td>
+      <td class="stat normal" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type steel has-text-light">Steel</td>
+      <td class="stat steel" id="weak_against">0</td>
+      <td class="stat steel" id="resists">0</td>
+      <td class="stat steel" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type dragon has-text-light">Dragon</td>
+      <td class="stat dragon" id="weak_against">0</td>
+      <td class="stat dragon" id="resists">0</td>
+      <td class="stat dragon" id="immune_to">0</td>
+    </tr>
+    <tr>
+      <td class="type fairy has-text-light">Fairy</td>
+      <td class="stat fairy" id="weak_against">0</td>
+      <td class="stat fairy" id="resists">0</td>
+      <td class="stat fairy" id="immune_to">0</td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+</section>
+{% endblock %}
